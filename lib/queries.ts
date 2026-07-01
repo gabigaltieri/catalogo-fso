@@ -26,6 +26,38 @@ export type Category = {
   subcategories: Subcategory[];
 };
 
+export type FlatProduct = Product & {
+  subcategoryId: string;
+  subcategoryName: string;
+  subcategorySub: string;
+  subcategoryIcon: string;
+  categoryId: string;
+  categoryName: string;
+};
+
+// Aplana el árbol categorías->subcategorías->productos para la tabla de
+// "Editar Productos" del admin (búsqueda/filtro) y el modal de edición.
+// No pega contra la base — solo reordena datos ya traídos por getCatalog().
+export function flattenProducts(categories: Category[]): FlatProduct[] {
+  const rows: FlatProduct[] = [];
+  categories.forEach((cat) => {
+    cat.subcategories.forEach((sc) => {
+      sc.products.forEach((p) => {
+        rows.push({
+          ...p,
+          subcategoryId: sc.id,
+          subcategoryName: sc.name,
+          subcategorySub: sc.sub,
+          subcategoryIcon: sc.icon,
+          categoryId: cat.id,
+          categoryName: cat.name,
+        });
+      });
+    });
+  });
+  return rows;
+}
+
 // Trae categorías, subcategorías y productos en 3 queries en paralelo
 // (en vez de un join anidado) y los arma en memoria — simple y suficiente
 // para el volumen de datos de este catálogo (decenas de productos, no miles).

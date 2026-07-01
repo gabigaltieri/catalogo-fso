@@ -23,7 +23,6 @@ function extractArray(varName) {
     }
   }
   const literal = html.slice(arrayStart, end);
-  // eslint-disable-next-line no-new-func
   return new Function(`return ${literal};`)();
 }
 
