@@ -42,6 +42,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Sin archivos README en el repo
+README.md
+readme.txt
+
 # Herramientas personales de Claude Code (no forman parte del producto)
 .agents/
 .claude/skills/banner-design/
@@ -53,3 +57,5 @@ next-env.d.ts
 .claude/skills/ui-styling/
 .claude/skills/ui-ux-pro-max/
 .claude/scheduled_tasks.lock
+
+.vercel
