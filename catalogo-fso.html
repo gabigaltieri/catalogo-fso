@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FSO — Catálogo de Productos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --red:        #CC0000;
+            --red-dark:   #8B0000;
+            --red-faint:  #FFF4F4;
+            --black:      #111111;
+            --dark:       #1E1E1E;
+            --gray-50:    #FAFAFA;
+            --gray-100:   #F3F3F3;
+            --gray-200:   #E5E5E5;
+            --gray-300:   #CCCCCC;
+            --gray-500:   #888888;
+            --gray-700:   #444444;
+            --white:      #FFFFFF;
+
+            --font-display: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+            --font-body:    'Inter', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--black);
+            background: var(--gray-50);
+            line-height: 1.5;
+        }
+
+        /* ═══════════ HEADER ═══════════ */
+        .site-header {
+            background: var(--black);
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            border-bottom: 2px solid var(--red);
+        }
+        .header-inner {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+        .logo-fso {
+            font-family: var(--font-display);
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--white);
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+        .logo-fso span { color: var(--red); }
+        .logo-info { display: flex; flex-direction: column; }
+        .logo-info b {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .logo-info small {
+            font-size: 10px;
+            color: #555;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+        .site-nav { display: flex; gap: 2px; }
+        .site-nav a {
+            color: #888;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 4px;
+            transition: background .15s, color .15s;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+        .site-nav a:hover,
+        .site-nav a.active {
+            background: var(--red);
+            color: var(--white);
+        }
+
+        /* ═══════════ HERO ═══════════ */
+        .hero {
+            background: linear-gradient(160deg, #0d0d0d 0%, #1c0000 65%, #280000 100%);
+            color: var(--white);
+            padding: 64px 60px 68px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(ellipse 55% 80% at 72% 50%, rgba(204,0,0,.14) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+
+        /* Hero izquierda */
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hero-eyebrow::before {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 2px;
+            background: var(--red);
+        }
+        .hero-headline {
+            font-family: var(--font-display);
+            font-size: 80px;
+            font-weight: 900;
+            line-height: .92;
+            letter-spacing: -1.5px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+        .hero-headline em {
+            font-style: normal;
+            color: var(--red);
+        }
+        .hero-sub {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.8;
+            max-width: 360px;
+        }
+
+        /* Hero derecha: cards de categoría */
+        .hero-right {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .hero-cat-card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.07);
+            border-left: 3px solid var(--red);
+            border-radius: 6px;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: background .15s, border-left-color .15s;
+        }
+        .hero-cat-card:hover {
+            background: rgba(204,0,0,.1);
+            border-left-color: #ff3333;
+        }
+        .hcc-icon { font-size: 26px; flex-shrink: 0; }
+        .hcc-text { flex: 1; }
+        .hcc-name {
+            font-family: var(--font-display);
+            font-size: 19px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            color: var(--white);
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+        .hcc-desc { font-size: 12px; color: #666; }
+        .hcc-arrow {
+            font-size: 16px;
+            color: #444;
+            flex-shrink: 0;
+            transition: color .15s, transform .15s;
+        }
+        .hero-cat-card:hover .hcc-arrow { color: var(--red); transform: translateX(3px); }
+
+        /* ═══════════ SECTION BANNER ═══════════ */
+        .section-banner {
+            background: var(--red);
+            color: var(--white);
+            padding: 32px 60px;
+            margin-top: 72px;
+            position: relative;
+            overflow: hidden;
+        }
+        .section-banner.dark    { background: var(--dark); }
+        .section-banner.darkred { background: var(--red-dark); }
+
+        /* Franja diagonal industrial — referencia a cintas de advertencia en bidones de limpieza */
+        .section-banner::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 5px;
+            background: repeating-linear-gradient(
+                -55deg,
+                rgba(0,0,0,.4) 0px, rgba(0,0,0,.4) 8px,
+                transparent 8px, transparent 16px
+            );
+        }
+
+        .sb-inner {
+            max-width: 1320px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+        .sb-icon {
+            font-size: 56px;
+            opacity: .45;
+            flex-shrink: 0;
+        }
+        .sb-text { flex: 1; }
+        .sb-text h2 {
+            font-family: var(--font-display);
+            font-size: 54px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+        .sb-text p {
+            font-size: 13px;
+            opacity: .7;
+            line-height: 1.6;
+            max-width: 520px;
+        }
+
+        /* ═══════════ CATALOG CONTENT WRAPPER ═══════════ */
+        .catalog-wrap {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 60px;
+        }
+
+        /* ═══════════ SUBCATEGORY BLOCK ═══════════ */
+        .subcat-block {
+            margin-top: 52px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .subcat-block:last-child { border-bottom: none; }
+
+        .subcat-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 32px;
+            margin-bottom: 22px;
+        }
+
+        .subcat-title-group {
+            border-left: 4px solid var(--red);
+            padding-left: 18px;
+            flex: 1;
+            padding-top: 2px;
+        }
+        .subcat-name {
+            font-family: var(--font-display);
+            font-size: 34px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -.5px;
+            line-height: 1.05;
+            color: var(--black);
+        }
+        .subcat-name-alt {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--gray-500);
+            margin-top: 1px;
+            line-height: 1;
+        }
+
+        /* Placeholder de imagen */
+        .cat-photo {
+            width: 300px;
+            min-height: 180px;
+            background: var(--gray-100);
+            border: 1.5px dashed var(--gray-300);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-shrink: 0;
+            transition: border-color .18s;
+        }
+        .cat-photo:hover { border-color: var(--red); }
+        .cat-photo .ph-icon  { font-size: 44px; opacity: .35; }
+        .cat-photo .ph-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-300);
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 0 20px;
+            line-height: 1.5;
+        }
+
+        /* ═══════════ PRODUCT TABLE ═══════════ */
+        .prod-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 10px rgba(0,0,0,.07);
+        }
+        .prod-table thead tr { background: var(--red); }
+        .prod-table.dark-head thead tr { background: var(--dark); }
+
+        .prod-table th {
+            padding: 12px 20px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.8);
+        }
+        .prod-table th:first-child { text-align: center; width: 88px; }
+
+        .prod-table tbody tr {
+            border-bottom: 1px solid var(--gray-200);
+            transition: background .12s;
+        }
+        .prod-table tbody tr:last-child { border-bottom: none; }
+        .prod-table tbody tr:hover { background: var(--red-faint); }
+
+        .prod-table td {
+            padding: 14px 20px;
+            font-size: 14px;
+            vertical-align: middle;
+            color: var(--black);
+        }
+        .prod-table td:first-child { text-align: center; }
+
+        .cod {
+            display: inline-block;
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            color: var(--red);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 4px;
+            min-width: 52px;
+            text-align: center;
+            letter-spacing: .5px;
+            font-family: 'Courier New', monospace;
+        }
+        .prod-name  { font-weight: 600; font-size: 14px; color: var(--black); }
+        .prod-pres  { color: var(--gray-700); font-size: 13px; white-space: nowrap; }
+        .prod-desc  { color: var(--gray-500); font-size: 13px; line-height: 1.65; }
+
+        .empty-catalog {
+            max-width: 1320px;
+            margin: 60px auto;
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--gray-500);
+        }
+        .empty-catalog .ec-icon { font-size: 48px; margin-bottom: 12px; }
+
+        /* ═══════════ CONTACT STRIP ═══════════ */
+        .contact-strip {
+            background: var(--black);
+            color: var(--white);
+            text-align: center;
+            padding: 72px 40px;
+            margin-top: 80px;
+            position: relative;
+        }
+        .contact-strip::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--red);
+        }
+        .contact-strip h2 {
+            font-family: var(--font-display);
+            font-size: 46px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -.5px;
+            margin-bottom: 8px;
+        }
+        .contact-strip p { color: #666; font-size: 15px; margin-bottom: 32px; }
+        .wa-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #25D366;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 14px 36px;
+            border-radius: 6px;
+            transition: background .15s, transform .15s;
+            letter-spacing: .3px;
+        }
+        .wa-btn:hover { background: #1fbe5c; transform: translateY(-2px); }
+
+        /* ═══════════ FOOTER ═══════════ */
+        footer {
+            background: #0a0a0a;
+            color: #555;
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid #1a1a1a;
+        }
+        .ft-logo {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--white);
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+        .ft-logo span { color: var(--red); }
+        footer p { font-size: 12px; line-height: 1.7; }
+        .ft-nav { display: flex; justify-content: center; gap: 28px; margin: 16px 0 20px; }
+        .ft-nav a {
+            color: #444;
+            text-decoration: none;
+            font-size: 11px;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            transition: color .15s;
+        }
+        .ft-nav a:hover { color: var(--red); }
+        footer small { font-size: 11px; color: #2e2e2e; }
+
+        /* ═══════════ FLOATING WA ═══════════ */
+        .wa-fab {
+            position: fixed;
+            bottom: 28px; right: 28px;
+            width: 60px; height: 60px;
+            background: #25D366;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,.3);
+            z-index: 300;
+            transition: transform .18s;
+        }
+        .wa-fab:hover { transform: scale(1.08); }
+
+        /* ═══════════ RESPONSIVE ═══════════ */
+        @media (max-width: 1024px) {
+            .catalog-wrap { padding: 0 32px; }
+            .cat-photo { width: 220px; min-height: 140px; }
+            .hero { padding: 48px 32px; }
+            .hero-headline { font-size: 60px; }
+            .section-banner { padding: 28px 32px; }
+            .sb-text h2 { font-size: 40px; }
+        }
+        @media (max-width: 768px) {
+            .hero-inner { grid-template-columns: 1fr; gap: 32px; }
+            .hero { padding: 40px 20px; }
+            .hero-headline { font-size: 52px; }
+            .subcat-header { flex-direction: column-reverse; }
+            .cat-photo { width: 100%; min-height: 130px; }
+            .site-nav { display: none; }
+            .catalog-wrap { padding: 0 20px; }
+            .section-banner { padding: 22px 20px; }
+            .sb-text h2 { font-size: 32px; }
+            .sb-icon { display: none; }
+            .prod-table th:nth-child(3),
+            .prod-table td:nth-child(3) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+    <div class="header-inner">
+        <a href="#" class="logo-wrap">
+            <div class="logo-fso">F<span>S</span>O</div>
+            <div class="logo-info">
+                <b>Productos de Limpieza</b>
+                <small>Limpieza que brilla en cada rincón</small>
+            </div>
+        </a>
+        <nav class="site-nav" id="siteNav"></nav>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-left">
+            <div class="hero-eyebrow">Catálogo 2025</div>
+            <h1 class="hero-headline">FSO<br><em>Productos</em><br>de Limpieza</h1>
+            <p class="hero-sub">Distribución mayorista de productos de limpieza, higiene institucional y descartables.</p>
+        </div>
+        <div class="hero-right" id="heroRight"></div>
+    </div>
+</section>
+
+<!-- CONTENIDO DEL CATÁLOGO — generado dinámicamente desde los datos del panel admin -->
+<main id="catalogMain"></main>
+
+<!-- CONTACT STRIP -->
+<div class="contact-strip">
+    <h2>¿Consultás por precios o disponibilidad?</h2>
+    <p>Escribinos directo por WhatsApp y te respondemos a la brevedad.</p>
+    <a href="https://wa.me/549XXXXXXXXXX?text=Hola%2C%20quiero%20consultar%20el%20cat%C3%A1logo%20FSO" class="wa-btn" target="_blank">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Consultar por WhatsApp
+    </a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="ft-logo">F<span>S</span>O</div>
+    <p>Productos de Limpieza &nbsp;·&nbsp; Higiene Institucional &nbsp;·&nbsp; Descartables</p>
+    <p style="font-style:italic;font-size:11px;margin-top:4px;color:#333;">"Limpieza que brilla en cada rincón"</p>
+    <nav class="ft-nav" id="footerNav"></nav>
+    <small>© 2025 FSO Productos de Limpieza &nbsp;·&nbsp; Todos los derechos reservados</small>
+</footer>
+
+<!-- FLOATING WHATSAPP -->
+<a href="https://wa.me/549XXXXXXXXXX?text=Hola%2C%20quiero%20consultar%20el%20cat%C3%A1logo%20FSO"
+   class="wa-fab" target="_blank" title="Consultar por WhatsApp">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+</a>
+
+<script>
+// ══════════════════════════════════════
+// DATOS POR DEFECTO (idénticos a admin.html)
+// Se usan solo si todavía no hay nada guardado en localStorage.
+// ══════════════════════════════════════
+const DEFAULT_CATS = [
+    { id: 1, name: "Productos de Limpieza",  icon: "🧹", color: "red" },
+    { id: 2, name: "Higiene Institucional",   icon: "🧴", color: "dark" },
+    { id: 3, name: "Descartables",            icon: "🗑️", color: "darkred" }
+];
+
+const DEFAULT_SUBCATS = [
+    { id: 1,  catId: 1, name: "Lavandinas",         sub: "Cloros",                   icon: "🫧" },
+    { id: 2,  catId: 1, name: "Detergentes",         sub: "",                         icon: "🍶" },
+    { id: 3,  catId: 1, name: "Desengrasantes",      sub: "Limpiadores",              icon: "🧽" },
+    { id: 4,  catId: 1, name: "Limpiavidrios",       sub: "",                         icon: "🪟" },
+    { id: 5,  catId: 1, name: "Escobas",             sub: "Palos · Accesorios",       icon: "🧹" },
+    { id: 6,  catId: 2, name: "Dispensers",          sub: "",                         icon: "🚿" },
+    { id: 7,  catId: 2, name: "Papel Higiénico",     sub: "Toallas de Mano",          icon: "🧻" },
+    { id: 8,  catId: 2, name: "Jabón Líquido",       sub: "Alcohol en Gel",           icon: "🧼" },
+    { id: 9,  catId: 2, name: "Desodorantes",        sub: "de Ambiente",              icon: "🌸" },
+    { id: 10, catId: 3, name: "Bolsas de Residuos",  sub: "",                         icon: "🗑️" },
+    { id: 11, catId: 3, name: "Guantes",             sub: "",                         icon: "🧤" },
+    { id: 12, catId: 3, name: "Vasos · Platos",      sub: "Cubiertos Descartables",   icon: "🥤" },
+    { id: 13, catId: 3, name: "Film · Papel Aluminio", sub: "Papel Manteca",          icon: "📦" }
+];
+
+const DEFAULT_PRODS = [
+    // Lavandinas
+    { id:1,  subcatId:1,  cod:"001", name:"Lavandina",                          pres:"5 lts",                     desc:"Concentración 55 grs. Limpia y desinfecta a fondo. Elimina el 99,9 % de los gérmenes. Apta para desinfección del agua." },
+    { id:2,  subcatId:1,  cod:"002", name:"Lavandina",                          pres:"10 lts",                    desc:"Concentración 55 grs. Ideal para grandes superficies y alto consumo institucional." },
+    { id:3,  subcatId:1,  cod:"003", name:"Lavandina",                          pres:"1 lt × 12 u",               desc:"Presentación individual. Práctica para distribución en múltiples espacios." },
+    { id:4,  subcatId:1,  cod:"004", name:"Cloro · Hipoclorito de Sodio",       pres:"5 lts",                     desc:"Concentración al 100 %. Compuesto oxidante de rápida acción para desinfección de superficies, eliminación de olores y piscinas." },
+    { id:5,  subcatId:1,  cod:"005", name:"Cloro · Hipoclorito de Sodio",       pres:"10 lts",                    desc:"Gran volumen para uso industrial, institucional y mantenimiento de piscinas." },
+    // Detergentes
+    { id:6,  subcatId:2,  cod:"010", name:"Detergente Ultra",                   pres:"5 lts",                     desc:"Alto poder desengrasante, materia activa 12 %. Biodegradable y amoniacal. Eficaz en vajilla, pisos, paredes, vidrios y cerámicos." },
+    { id:7,  subcatId:2,  cod:"011", name:"Detergente Ultra",                   pres:"10 lts",                    desc:"Misma fórmula, mayor rendimiento. Ideal para cocinas industriales y comedores." },
+    { id:8,  subcatId:2,  cod:"012", name:"Detergente Cristal",                 pres:"5 lts",                     desc:"Alto poder desengrasante, materia activa 15 %. Resultado brillante en cristalería y superficies delicadas." },
+    { id:9,  subcatId:2,  cod:"013", name:"Detergente Cristal",                 pres:"1 lt × 12 u",               desc:"Presentación individual. Materia activa 15 %." },
+    { id:10, subcatId:2,  cod:"014", name:"Detergente Max",                     pres:"5 lts",                     desc:"Materia activa 10 %. Eficaz agente limpiador de efectos múltiples para cocinas, vajillas, pisos, paredes y vidrios." },
+    { id:11, subcatId:2,  cod:"015", name:"Detergente Max",                     pres:"10 lts",                    desc:"Mayor rendimiento. Puede usarse en cocinas, vajillas, pisos, paredes, mesas y vidrios." },
+    // Desengrasantes
+    { id:12, subcatId:3,  cod:"020", name:"Desengrasante con Amoníaco",         pres:"5 lts",                     desc:"Aspecto líquido. Elimina fácilmente la grasa y suciedad más difícil de cocina, baño y parrillas." },
+    { id:13, subcatId:3,  cod:"021", name:"Desengrasante Gel Forte",            pres:"5 lts",                     desc:"Aspecto espeso, inodoro y traslúcido. Alta eficacia en cocinas, baños, parrillas y pisos." },
+    { id:14, subcatId:3,  cod:"022", name:"Limpiador Concentrado de Alto Poder",pres:"5 lts",                     desc:"Penetra, remueve y desincusta todo tipo de grasas y residuos generales." },
+    { id:15, subcatId:3,  cod:"023", name:"Limpiador Multiuso",                 pres:"5 lts",                     desc:"Para la limpieza diaria de todo tipo de superficies." },
+    { id:16, subcatId:3,  cod:"024", name:"Limpiador Multiuso con Atomizador",  pres:"1 lt",                      desc:"Listo para usar. Ideal para cocina, baño y mobiliario en general." },
+    // Limpiavidrios
+    { id:17, subcatId:4,  cod:"030", name:"Limpiavidrios",                      pres:"5 lts",                     desc:"Limpia vidrios y superficies. Solventes orgánicos de gran poder desengrasante. Brillo sin vetas." },
+    { id:18, subcatId:4,  cod:"031", name:"Limpiavidrios con Atomizador",       pres:"1 lt",                      desc:"Listo para usar. Limpieza profunda en todo tipo de suciedad. Sin rayas ni residuos." },
+    { id:19, subcatId:4,  cod:"032", name:"Limpiavidrios Repuesto",             pres:"1 lt",                      desc:"Para rellenar atomizador. Misma fórmula de alto rendimiento." },
+    { id:20, subcatId:4,  cod:"033", name:"Limpiavidrios en Aerosol",           pres:"360 cc",                    desc:"Aplicación rápida y precisa. Sin residuos, sin rayas. Para uso en altura." },
+    // Escobas
+    { id:21, subcatId:5,  cod:"040", name:"Palo de Madera",                     pres:"1,30 mts",                  desc:"Compatible con escobas, escobillones, secadores y plumero techo." },
+    { id:22, subcatId:5,  cod:"041", name:"Palo de Madera",                     pres:"2 mts",                     desc:"Ideal para tareas de limpieza en altura." },
+    { id:23, subcatId:5,  cod:"042", name:"Palo de Metal Extensible",           pres:"1 mt extensible a 2 mts",   desc:"Regulable. Se complementa con secador de vidrio. Ideal para trabajos en altura." },
+    { id:24, subcatId:5,  cod:"043", name:"Escoba Plástica",                    pres:"—",                         desc:"Cerdas plásticas duras. Para pisos exteriores e interiores de uso intensivo." },
+    { id:25, subcatId:5,  cod:"044", name:"Pala para Residuos",                 pres:"1 m",                       desc:"Facilita la recolección de residuos. Liviana y resistente." },
+    { id:26, subcatId:5,  cod:"045", name:"Trapo de Piso",                      pres:"400 grs",                   desc:"Algodón absorbente. Para pisos y superficies húmedas. Alta durabilidad." },
+    // Dispensers
+    { id:27, subcatId:6,  cod:"100", name:"Soporte para Jabón Bocha",           pres:"Corto · 12 cm",             desc:"Ideal para colocar el jabón bocha en la pared. Material de metal." },
+    { id:28, subcatId:6,  cod:"101", name:"Soporte para Jabón Bocha",           pres:"Largo · 30 cm",             desc:"Ideal para colocar el jabón bocha en la pared. Material de metal." },
+    { id:29, subcatId:6,  cod:"102", name:"Dispenser Jabón Líquido y Alcohol en Gel", pres:"600 cc",             desc:"De PVC con relleno a granel. Cerradura anti-robo. Diseño compacto y elegante." },
+    { id:30, subcatId:6,  cod:"103", name:"Dispenser Papel Higiénico en Rollo", pres:"—",                        desc:"PVC blanco, cerradura anti-robo. Para repuesto de 300 mts. Ideal para áreas de gran consumo." },
+    { id:31, subcatId:6,  cod:"104", name:"Dispenser Papel Higiénico Intercalable", pres:"—",                   desc:"PVC blanco, cerradura anti-robo. Fácil de cargar. Para baños institucionales." },
+    { id:32, subcatId:6,  cod:"105", name:"Dispenser Toalla Intercalable",      pres:"—",                        desc:"Para repuesto de toallas beige o blancas. PVC blanco, cerradura anti-robo." },
+    { id:33, subcatId:6,  cod:"106", name:"Dispenser Toalla en Bobina",         pres:"—",                        desc:"Para toallas de 300/400 mts. Caño pintado con epoxi. Chapa dentada para corte del papel." },
+    { id:34, subcatId:6,  cod:"107", name:"Dispenser Desodorante de Ambientes", pres:"—",                        desc:"PVC blanco con visor digital. Programación de encendido y apagado automático del aromatizador." },
+    { id:35, subcatId:6,  cod:"108", name:"Atomizador Spray Universal",         pres:"1 lt",                     desc:"Pulverizador plástico convencional apto para ser utilizado con limpiadores generales." },
+    { id:36, subcatId:6,  cod:"109", name:"Dosificador Universal",              pres:"250 cc",                   desc:"Ideal para ser rellenado de acuerdo a sus necesidades." },
+    // Papel Higiénico
+    { id:37, subcatId:7,  cod:"110", name:"Papel Higiénico Institucional en Rollo", pres:"300 mts × 6 u",       desc:"Doble hoja, blanco. Para dispensers de alto consumo en baños institucionales." },
+    { id:38, subcatId:7,  cod:"111", name:"Papel Higiénico Intercalable",       pres:"250 u × 10 pk",            desc:"Hoja simple, blanco. Para dispenser intercalable." },
+    { id:39, subcatId:7,  cod:"112", name:"Toalla Intercalable",                pres:"150 u × 20 pk",            desc:"Blanco o beige. Absorbente de alta calidad. Para dispenser intercalable." },
+    { id:40, subcatId:7,  cod:"113", name:"Toalla en Bobina",                   pres:"200 mts",                  desc:"Blanca, cerradura anti-robo. Fácil de cargar. Para baños de gran consumo." },
+    // Jabón
+    { id:41, subcatId:8,  cod:"120", name:"Jabón Líquido Antibacterial",        pres:"5 lts",                    desc:"Elimina el 99,9 % de gérmenes. Suave con la piel. Para rellenar dispensers." },
+    { id:42, subcatId:8,  cod:"121", name:"Jabón Líquido con Aloe",             pres:"5 lts",                    desc:"Fórmula suavizante con extracto de aloe vera. Ideal para pieles sensibles." },
+    { id:43, subcatId:8,  cod:"122", name:"Alcohol en Gel 70°",                 pres:"5 lts",                    desc:"Higienizante de manos sin agua. Para rellenar dispensers de alcohol." },
+    // Desodorantes
+    { id:44, subcatId:9,  cod:"130", name:"Desodorante Aromatizador en Aerosol",pres:"360 cc",                   desc:"Variedad de fragancias. Neutraliza olores de forma inmediata." },
+    { id:45, subcatId:9,  cod:"131", name:"Repuesto para Dispenser Aromatizador",pres:"—",                       desc:"Compatible con dispensers de programación automática." },
+    { id:46, subcatId:9,  cod:"132", name:"Pastillas para Inodoro",             pres:"50 grs",                   desc:"Desodorizan y desinfectan el agua del inodoro en cada descarga." },
+    // Bolsas
+    { id:47, subcatId:10, cod:"200", name:"Bolsa de Residuos Chica",            pres:"35×50 cm · 10 u",          desc:"Polietileno negro. Para cestos pequeños de oficina y baño." },
+    { id:48, subcatId:10, cod:"201", name:"Bolsa de Residuos Mediana",          pres:"55×70 cm · 10 u",          desc:"Alta resistencia. Polietileno negro. Para cocinas y espacios de trabajo." },
+    { id:49, subcatId:10, cod:"202", name:"Bolsa de Residuos Grande",           pres:"80×100 cm · 10 u",         desc:"Reforzada. Polietileno negro. Uso institucional y comercial de alta demanda." },
+    { id:50, subcatId:10, cod:"203", name:"Bolsa de Residuos Extra Grande",     pres:"100×120 cm · 5 u",         desc:"Extra resistente. Para grandes volúmenes. Ideal para industria y eventos." },
+    { id:51, subcatId:10, cod:"204", name:"Bolsa de Residuos Negra en Rollo",   pres:"80×100 cm · 25 u",         desc:"En rollo. Mayor economía para consumo institucional diario." },
+    // Guantes
+    { id:52, subcatId:11, cod:"210", name:"Guantes Descartables de Látex",      pres:"100 u · T: S / M / L",     desc:"Sin polvo. Alta sensibilidad táctil. Para limpieza, cocina y uso médico." },
+    { id:53, subcatId:11, cod:"211", name:"Guantes de Nitrilo",                 pres:"100 u · T: S / M / L",     desc:"Sin látex. Alta resistencia a químicos. Uso industrial y alimentario." },
+    { id:54, subcatId:11, cod:"212", name:"Guantes de Limpieza Reforzados",     pres:"Par · T: S / M / L",       desc:"Goma gruesa reutilizable. Para limpieza pesada con productos químicos." },
+    // Vasos
+    { id:55, subcatId:12, cod:"220", name:"Vasos Plásticos",                    pres:"200 cc · ×100",            desc:"Transparentes. Para bebidas frías. Descartables de un solo uso." },
+    { id:56, subcatId:12, cod:"221", name:"Vasos de Telgopor",                  pres:"250 cc · ×50",             desc:"Térmico. Para bebidas calientes y frías. Alta resistencia." },
+    { id:57, subcatId:12, cod:"222", name:"Platos Descartables",                pres:"23 cm · ×25",              desc:"Blancos. Para eventos, comedores y catering." },
+    { id:58, subcatId:12, cod:"223", name:"Set Cubiertos Descartables",         pres:"Tenedor+Cuchillo+Cuchara · ×50", desc:"Plástico resistente. Set completo para comedores y eventos." },
+    { id:59, subcatId:12, cod:"224", name:"Sorbetes Plásticos",                 pres:"×500",                     desc:"Color blanco. Para uso en gastronomía, bares y eventos." },
+    // Film
+    { id:60, subcatId:13, cod:"230", name:"Film Estirable",                     pres:"30 cm × 300 mts",          desc:"Transparente. Para envolver alimentos y conservar frescura." },
+    { id:61, subcatId:13, cod:"231", name:"Papel Aluminio",                     pres:"30 cm × 100 mts",          desc:"Alta resistencia al calor. Para cocción, conservación y catering." },
+    { id:62, subcatId:13, cod:"232", name:"Papel Manteca",                      pres:"30 cm × 100 mts",          desc:"Antiaderente. Para cocina, panadería y presentación de alimentos." }
+];
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let cats    = [];
+let subcats = [];
+let prods   = [];
+
+function load() {
+    const c = localStorage.getItem('fso_cat');
+    const s = localStorage.getItem('fso_subcat');
+    const p = localStorage.getItem('fso_prod');
+    cats    = c ? JSON.parse(c) : [...DEFAULT_CATS];
+    subcats = s ? JSON.parse(s) : [...DEFAULT_SUBCATS];
+    prods   = p ? JSON.parse(p) : [...DEFAULT_PRODS];
+}
+
+function esc(s) {
+    return String(s)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+}
+
+function getSubcatName(sc) {
+    return sc.name + (sc.sub ? ' · ' + sc.sub : '');
+}
+
+function bannerClass(color) {
+    return color === 'dark' ? 'dark' : color === 'darkred' ? 'darkred' : '';
+}
+
+// ══════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════
+function buildProductTable(subcatProds, color) {
+    const tableClass  = color === 'dark' ? 'prod-table dark-head' : 'prod-table';
+    const theadStyle  = color === 'darkred' ? ' style="background:var(--red-dark)"' : '';
+    const rows = subcatProds.map(p => `
+                <tr><td><span class="cod">${esc(p.cod)}</span></td><td class="prod-name">${esc(p.name)}</td><td class="prod-pres">${esc(p.pres)}</td><td class="prod-desc">${esc(p.desc)}</td></tr>`).join('');
+    return `
+        <table class="${tableClass}">
+            <thead${theadStyle}><tr>
+                <th>Código</th>
+                <th style="width:26%">Producto</th>
+                <th style="width:155px">Presentación</th>
+                <th>Descripción</th>
+            </tr></thead>
+            <tbody>${rows}
+            </tbody>
+        </table>`;
+}
+
+function buildSubcatBlock(sc, color) {
+    const subcatProds = prods.filter(p => p.subcatId === sc.id);
+    if (!subcatProds.length) return '';
+    return `
+    <div class="subcat-block">
+        <div class="subcat-header">
+            <div class="subcat-title-group">
+                <div class="subcat-name">${esc(sc.name)}</div>
+                ${sc.sub ? `<div class="subcat-name-alt">${esc(sc.sub)}</div>` : ''}
+            </div>
+            <div class="cat-photo">
+                <div class="ph-icon">${sc.icon || '📦'}</div>
+                <div class="ph-label">Agregar foto de<br>${esc(getSubcatName(sc))}</div>
+            </div>
+        </div>
+        ${buildProductTable(subcatProds, color)}
+    </div>`;
+}
+
+function buildCategorySection(cat) {
+    const catSubcats = subcats.filter(s => s.catId === cat.id);
+    const blocks = catSubcats.map(sc => buildSubcatBlock(sc, cat.color)).filter(Boolean).join('');
+    if (!blocks) return '';
+
+    const names = catSubcats.map(getSubcatName);
+    const desc  = names.length > 4
+        ? names.slice(0, 4).join(', ') + ' y más.'
+        : names.join(', ') + '.';
+
+    return `
+<div class="section-banner ${bannerClass(cat.color)}" id="sec-cat-${cat.id}">
+    <div class="sb-inner">
+        <div class="sb-icon">${cat.icon || '📁'}</div>
+        <div class="sb-text">
+            <h2>${esc(cat.name)}</h2>
+            <p>${esc(desc)}</p>
+        </div>
+    </div>
+</div>
+<div class="catalog-wrap">${blocks}
+</div>`;
+}
+
+function render() {
+    load();
+
+    const navLinks = cats.map(c => `<a href="#sec-cat-${c.id}">${esc(c.name)}</a>`).join('');
+    document.getElementById('siteNav').innerHTML   = navLinks;
+    document.getElementById('footerNav').innerHTML = navLinks;
+
+    document.getElementById('heroRight').innerHTML = cats.map(c => {
+        const names = subcats.filter(s => s.catId === c.id).map(s => s.name);
+        return `
+            <a href="#sec-cat-${c.id}" class="hero-cat-card">
+                <div class="hcc-icon">${c.icon || '📁'}</div>
+                <div class="hcc-text">
+                    <div class="hcc-name">${esc(c.name)}</div>
+                    <div class="hcc-desc">${esc(names.join(', '))}</div>
+                </div>
+                <div class="hcc-arrow">→</div>
+            </a>`;
+    }).join('');
+
+    const sections = cats.map(buildCategorySection).filter(Boolean).join('');
+    document.getElementById('catalogMain').innerHTML = sections || `
+        <div class="empty-catalog">
+            <div class="ec-icon">📦</div>
+            Todavía no hay productos cargados en el catálogo.
+        </div>`;
+}
+
+// ══════════════════════════════════════
+// NAVEGACIÓN (delegada — sobrevive a los re-renders)
+// ══════════════════════════════════════
+document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+});
+window.addEventListener('scroll', () => {
+    let cur = '';
+    document.querySelectorAll('.section-banner[id]').forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+    document.querySelectorAll('.site-nav a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}, { passive: true });
+
+// Si el panel admin (abierto en otra pestaña) guarda cambios, este catálogo
+// se actualiza solo — comparten el mismo localStorage por ser páginas file://.
+window.addEventListener('storage', e => {
+    if (['fso_cat', 'fso_subcat', 'fso_prod'].includes(e.key)) render();
+});
+
+render();
+</script>
+</body>
+</html>

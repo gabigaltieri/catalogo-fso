@@ -1,0 +1,20 @@
+node_modules/
+.next/
+.env
+.env.local
+.env*.local
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# Herramientas personales de Claude Code (no forman parte del producto)
+.agents/
+.claude/skills/banner-design/
+.claude/skills/brand/
+.claude/skills/design/
+.claude/skills/design-system/
+.claude/skills/frontend-design/
+.claude/skills/slides/
+.claude/skills/ui-styling/
+.claude/skills/ui-ux-pro-max/
+.claude/scheduled_tasks.lock
