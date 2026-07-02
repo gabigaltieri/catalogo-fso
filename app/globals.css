@@ -242,6 +242,7 @@ body {
     line-height: 1;
 }
 .cat-photo {
+    position: relative;
     width: 300px;
     min-height: 180px;
     background: var(--gray-100);
@@ -253,9 +254,11 @@ body {
     justify-content: center;
     gap: 8px;
     flex-shrink: 0;
+    overflow: hidden;
     transition: border-color .18s;
 }
 .cat-photo:hover { border-color: var(--red); }
+.cat-photo.cat-photo-filled { border: none; background: none; }
 .cat-photo .ph-icon  { font-size: 44px; opacity: .35; }
 .cat-photo .ph-label {
     font-size: 11px;
@@ -666,6 +669,36 @@ footer small { font-size: 11px; color: #2e2e2e; }
 .sc-prod-count { font-size: 11px; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; color: var(--muted); }
 .btn-del-sc { background: none; border: none; color: #ccc; cursor: pointer; font-size: 16px; padding: 2px 4px; border-radius: 4px; transition: all .2s; margin-left: 6px; }
 .btn-del-sc:hover { color: var(--red); background: #fff4f4; }
+
+.sc-thumb {
+    position: relative;
+    width: 40px; height: 40px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    border: 1.5px dashed var(--gray-300, #ccc);
+    background: var(--gray-100, #f3f3f3);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    overflow: visible;
+    transition: border-color .15s;
+}
+.sc-thumb:hover { border-color: var(--red); }
+.sc-thumb:disabled { opacity: .6; cursor: wait; }
+.sc-thumb-empty { font-size: 16px; opacity: .5; }
+.sc-thumb-img { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; display: block; border: none; }
+.sc-thumb-remove {
+    position: absolute;
+    top: -6px; right: -6px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--black);
+    color: #fff;
+    font-size: 9px;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+}
+.sc-thumb-remove:hover { background: var(--red); }
 
 .cards-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 700px) { .cards-2col { grid-template-columns: 1fr; } }

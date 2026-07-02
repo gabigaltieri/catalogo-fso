@@ -15,6 +15,7 @@ export type Subcategory = {
   name: string;
   sub: string;
   icon: string;
+  imageUrl: string | null;
   products: Product[];
 };
 
@@ -91,6 +92,7 @@ export async function getCatalog(): Promise<Category[]> {
         name: sc.name,
         sub: sc.sub,
         icon: sc.icon,
+        imageUrl: sc.image_url,
         products: prods
           .filter((p) => p.subcategory_id === sc.id)
           .map((p) => ({

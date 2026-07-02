@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getCatalog, type Category } from '@/lib/queries';
 import NavScrollSync from '@/app/_components/NavScrollSync';
 
@@ -105,10 +106,22 @@ export default async function CatalogPage() {
                         <div className="subcat-name">{sc.name}</div>
                         {sc.sub && <div className="subcat-name-alt">{sc.sub}</div>}
                       </div>
-                      <div className="cat-photo">
-                        <div className="ph-icon">{sc.icon || '📦'}</div>
-                        <div className="ph-label">Agregar foto de<br />{subcatLabel(sc)}</div>
-                      </div>
+                      {sc.imageUrl ? (
+                        <div className="cat-photo cat-photo-filled">
+                          <Image
+                            src={sc.imageUrl}
+                            alt={subcatLabel(sc)}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 300px"
+                            style={{ objectFit: 'cover' }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="cat-photo">
+                          <div className="ph-icon">{sc.icon || '📦'}</div>
+                          <div className="ph-label">Agregar foto de<br />{subcatLabel(sc)}</div>
+                        </div>
+                      )}
                     </div>
 
                     <table className={`prod-table ${tableClass(cat.color)}`}>

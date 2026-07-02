@@ -35,6 +35,7 @@ export type Database = {
           name: string;
           sub: string;
           icon: string;
+          image_url: string | null;
           sort_order: number;
           created_at: string;
         };
@@ -44,6 +45,7 @@ export type Database = {
           name: string;
           sub?: string;
           icon?: string;
+          image_url?: string | null;
           sort_order?: number;
           created_at?: string;
         };

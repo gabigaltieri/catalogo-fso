@@ -5,6 +5,7 @@ import type { BannerColor } from '@/lib/database.types';
 import type { Category } from '@/lib/queries';
 import { createCategory, createSubcategory, deleteCategory, deleteSubcategory } from '../actions';
 import HelpIcon from './HelpIcon';
+import SubcategoryImage from './SubcategoryImage';
 
 export default function CategoriesTree({
   catalog,
@@ -117,6 +118,12 @@ export default function CategoriesTree({
                 {cat.subcategories.length ? (
                   cat.subcategories.map((sc) => (
                     <div className="subcat-row" key={sc.id}>
+                      <SubcategoryImage
+                        subcategoryId={sc.id}
+                        imageUrl={sc.imageUrl}
+                        showToast={showToast}
+                        refresh={refresh}
+                      />
                       <span className="sc-icon">{sc.icon}</span>
                       <span className="sc-name">
                         {sc.name}
