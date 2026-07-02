@@ -111,13 +111,13 @@ export async function deleteSubcategory(id: string) {
   refresh();
 }
 
-const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
 
 export async function uploadSubcategoryImage(subcategoryId: string, formData: FormData) {
   const file = formData.get('file');
   if (!(file instanceof File) || file.size === 0) throw new Error('Elegí una imagen');
   if (!file.type.startsWith('image/')) throw new Error('El archivo tiene que ser una imagen');
-  if (file.size > MAX_IMAGE_BYTES) throw new Error('La imagen no puede pesar más de 5 MB');
+  if (file.size > MAX_IMAGE_BYTES) throw new Error('La imagen no puede pesar más de 20 MB');
 
   const supabase = createServiceClient();
   const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
