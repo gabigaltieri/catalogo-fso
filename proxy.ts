@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { SESSION_COOKIE_NAME, isValidSessionCookieValue } from '@/lib/auth';
 
-// Next.js 16 renombró middleware.ts -> proxy.ts (export proxy() + proxyConfig,
-// en vez de middleware() + config). Misma idea: gate de /admin/* por contraseña.
+// Next.js 16 renombró middleware.ts -> proxy.ts y middleware() -> proxy(),
+// pero el export de configuración se sigue llamando "config" (no "proxyConfig").
+// Gate de /admin/* por contraseña.
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -20,6 +21,6 @@ export function proxy(request: NextRequest) {
   return NextResponse.next();
 }
 
-export const proxyConfig = {
+export const config = {
   matcher: ['/admin/:path*'],
 };

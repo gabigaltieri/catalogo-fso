@@ -59,3 +59,4 @@ readme.txt
 .claude/scheduled_tasks.lock
 
 .vercel
+supabase/.temp/
