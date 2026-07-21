@@ -2,7 +2,10 @@
 
 import { useRef, useState } from 'react';
 import Image from 'next/image';
-import { removeSubcategoryImage, uploadSubcategoryImage } from '../actions';
+import { createPublicClient } from '@/lib/supabase/public';
+import { createSubcategoryImageUploadUrl, finalizeSubcategoryImage, removeSubcategoryImage } from '../actions';
+
+const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
 
 export default function SubcategoryImage({
   subcategoryId,
@@ -20,11 +23,29 @@ export default function SubcategoryImage({
 
   async function handleFile(file: File | undefined) {
     if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showToast('El archivo tiene que ser una imagen');
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      showToast('La imagen no puede pesar más de 20 MB');
+      return;
+    }
+
     setBusy(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      await uploadSubcategoryImage(subcategoryId, formData);
+      const ext = file.name.split('.').pop() || 'jpg';
+      const { path, token } = await createSubcategoryImageUploadUrl(subcategoryId, ext);
+
+      // Sube directo del navegador a Supabase Storage: evita el límite fijo
+      // de 4.5 MB que Vercel impone al body de cualquier función.
+      const supabase = createPublicClient();
+      const { error: uploadError } = await supabase.storage
+        .from('subcategory-images')
+        .uploadToSignedUrl(path, token, file, { contentType: file.type });
+      if (uploadError) throw new Error(uploadError.message);
+
+      await finalizeSubcategoryImage(subcategoryId, path);
       showToast('Foto actualizada', 'success');
       refresh();
     } catch (e) {

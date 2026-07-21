@@ -111,26 +111,28 @@ export async function deleteSubcategory(id: string) {
   refresh();
 }
 
-const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
+// La subida del archivo va del navegador directo a Supabase Storage (no pasa
+// por acá) porque Vercel rechaza cualquier body de función de más de 4.5 MB,
+// límite fijo de la plataforma que no depende de next.config.ts. Estas dos
+// acciones solo mueven texto (una URL firmada y un path), nunca los bytes
+// de la imagen.
 
-export async function uploadSubcategoryImage(subcategoryId: string, formData: FormData) {
-  const file = formData.get('file');
-  if (!(file instanceof File) || file.size === 0) throw new Error('Elegí una imagen');
-  if (!file.type.startsWith('image/')) throw new Error('El archivo tiene que ser una imagen');
-  if (file.size > MAX_IMAGE_BYTES) throw new Error('La imagen no puede pesar más de 20 MB');
-
-  const supabase = createServiceClient();
-  const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+export async function createSubcategoryImageUploadUrl(subcategoryId: string, ext: string) {
+  const cleanExt = ext.toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
   // Nombre de archivo único por subida: evita tener que limpiar la imagen
   // vieja del bucket (queda huérfana, costo de storage insignificante a
   // esta escala) y evita problemas de caché de navegador con la URL nueva.
-  const path = `${subcategoryId}/${Date.now()}.${ext}`;
+  const path = `${subcategoryId}/${Date.now()}.${cleanExt}`;
 
-  const { error: uploadError } = await supabase.storage
-    .from('subcategory-images')
-    .upload(path, file, { contentType: file.type });
-  if (uploadError) throw new Error(uploadError.message);
+  const supabase = createServiceClient();
+  const { data, error } = await supabase.storage.from('subcategory-images').createSignedUploadUrl(path);
+  if (error) throw new Error(error.message);
 
+  return { path, token: data.token };
+}
+
+export async function finalizeSubcategoryImage(subcategoryId: string, path: string) {
+  const supabase = createServiceClient();
   const { data: pub } = supabase.storage.from('subcategory-images').getPublicUrl(path);
 
   const { error } = await supabase
