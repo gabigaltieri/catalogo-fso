@@ -45,6 +45,7 @@ next-env.d.ts
 # Sin archivos README en el repo
 README.md
 readme.txt
+transcripcion-maxilimp.txt
 
 # Herramientas personales de Claude Code (no forman parte del producto)
 .agents/

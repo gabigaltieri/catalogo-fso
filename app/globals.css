@@ -215,6 +215,31 @@ body {
 }
 .sb-text p { font-size: 13px; opacity: .7; line-height: 1.6; max-width: 520px; }
 
+/* ═══════════ CATEGORY FILTER BAR ═══════════ */
+.filter-bar {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 18px 60px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.filter-chip {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .3px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1.5px solid var(--gray-200);
+    background: var(--white);
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+}
+.filter-chip:hover { border-color: var(--red); color: var(--red); }
+.filter-chip.active { background: var(--red); border-color: var(--red); color: var(--white); }
+
 /* ═══════════ CATALOG CONTENT WRAPPER ═══════════ */
 .catalog-wrap { max-width: 1320px; margin: 0 auto; padding: 0 60px; }
 
@@ -415,6 +440,7 @@ footer small { font-size: 11px; color: #2e2e2e; }
 /* ═══════════ RESPONSIVE (catálogo) ═══════════ */
 @media (max-width: 1024px) {
     .catalog-wrap { padding: 0 32px; }
+    .filter-bar { padding: 18px 32px 0; }
     .cat-photo { width: 220px; min-height: 140px; }
     .hero { padding: 48px 32px; }
     .hero-headline { font-size: 60px; }
@@ -429,6 +455,7 @@ footer small { font-size: 11px; color: #2e2e2e; }
     .cat-photo { width: 100%; min-height: 130px; }
     .site-nav { display: none; }
     .catalog-wrap { padding: 0 20px; }
+    .filter-bar { padding: 14px 20px 0; }
     .section-banner { padding: 22px 20px; }
     .sb-text h2 { font-size: 32px; }
     .sb-icon { display: none; }

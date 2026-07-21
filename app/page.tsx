@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { getCatalog, type Category } from '@/lib/queries';
 import NavScrollSync from '@/app/_components/NavScrollSync';
+import CategoryFilter from '@/app/_components/CategoryFilter';
 
 export const revalidate = 30;
 
@@ -98,9 +99,14 @@ export default async function CatalogPage() {
                 </div>
               </div>
 
-              <div className="catalog-wrap">
+              <CategoryFilter
+                groupId={cat.id}
+                items={subcatsWithProducts.map((sc) => ({ id: sc.id, label: subcatLabel(sc) }))}
+              />
+
+              <div className="catalog-wrap" data-cat-group={cat.id}>
                 {subcatsWithProducts.map((sc) => (
-                  <div key={sc.id} className="subcat-block">
+                  <div key={sc.id} className="subcat-block" data-subcat={sc.id}>
                     <div className="subcat-header">
                       <div className="subcat-title-group">
                         <div className="subcat-name">{sc.name}</div>
@@ -178,6 +184,10 @@ export default async function CatalogPage() {
       <a href={WHATSAPP_URL} className="wa-fab" target="_blank" title="Consultar por WhatsApp">
         <WhatsAppIcon size={30} />
       </a>
+
+      <div style={{ textAlign: 'center', padding: '8px 0', background: '#000' }}>
+        <a href="/admin" style={{ fontSize: 11, color: '#999' }}>ADMIN</a>
+      </div>
 
       <NavScrollSync />
     </>
