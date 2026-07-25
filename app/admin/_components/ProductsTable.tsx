@@ -5,6 +5,7 @@ import { flattenProducts, type Category, type FlatProduct } from '@/lib/queries'
 import { deleteProduct } from '../actions';
 import HelpIcon from './HelpIcon';
 import EditProductModal from './EditProductModal';
+import BackToTop from '@/app/_components/BackToTop';
 
 export default function ProductsTable({
   catalog,
@@ -88,7 +89,11 @@ export default function ProductsTable({
                   <br />
                   <span style={{ color: '#888', fontSize: 12 }}>{p.pres}</span>
                 </td>
-                <td style={{ maxWidth: 340, fontSize: 13, color: '#555' }}>{p.description}</td>
+                <td style={{ maxWidth: 340, fontSize: 13, color: '#555' }}>
+                  <input type="checkbox" id={`admin-desc-${p.id}`} className="desc-toggle" />
+                  <span className="desc-text">{p.description}</span>
+                  <label htmlFor={`admin-desc-${p.id}`} className="desc-btn" />
+                </td>
                 <td>
                   <span className="cat-tag">
                     {p.subcategoryIcon} {p.subcategoryName}{p.subcategorySub ? ' · ' + p.subcategorySub : ''}
@@ -113,6 +118,8 @@ export default function ProductsTable({
           refresh={refresh}
         />
       )}
+
+      <BackToTop />
     </>
   );
 }

@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { getCatalog, type Category } from '@/lib/queries';
 import NavScrollSync from '@/app/_components/NavScrollSync';
 import CategoryFilter from '@/app/_components/CategoryFilter';
+import BackToTop from '@/app/_components/BackToTop';
 
 export const revalidate = 30;
 
@@ -138,8 +139,8 @@ export default async function CatalogPage() {
                       <thead>
                         <tr>
                           <th>Código</th>
-                          <th style={{ width: '26%' }}>Producto</th>
-                          <th style={{ width: 155 }}>Presentación</th>
+                          <th>Producto</th>
+                          <th>Presentación</th>
                           <th>Descripción</th>
                         </tr>
                       </thead>
@@ -149,7 +150,11 @@ export default async function CatalogPage() {
                             <td><span className="cod">{p.cod}</span></td>
                             <td className="prod-name">{p.name}</td>
                             <td className="prod-pres">{p.pres}</td>
-                            <td className="prod-desc">{p.description}</td>
+                            <td className="prod-desc">
+                              <input type="checkbox" id={`desc-${p.id}`} className="desc-toggle" />
+                              <span className="desc-text">{p.description}</span>
+                              <label htmlFor={`desc-${p.id}`} className="desc-btn" />
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -195,6 +200,8 @@ export default async function CatalogPage() {
       <a href={WHATSAPP_URL} className="wa-fab" target="_blank" title="Consultar por WhatsApp">
         <WhatsAppIcon size={30} />
       </a>
+
+      <BackToTop />
 
       <div style={{ textAlign: 'center', padding: '8px 0', background: '#000' }}>
         <a href="/admin" style={{ fontSize: 11, color: '#999' }}>ADMIN</a>

@@ -71,6 +71,7 @@ const TABS: { id: Tab; label: string; tip: string; icon: React.ReactNode; title:
 export default function AdminApp({ catalog }: { catalog: Category[] }) {
   const [tab, setTab] = useState<Tab>('dashboard');
   const [toast, setToast] = useState<{ msg: string; type?: 'success' } | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
   function showToast(msg: string, type?: 'success') {
@@ -86,49 +87,67 @@ export default function AdminApp({ catalog }: { catalog: Category[] }) {
 
   return (
     <div className="app-shell">
-      <aside className="sidebar">
+      <aside className={`sidebar${menuOpen ? ' menu-open' : ''}`}>
         <div className="sidebar-logo">
           <span className="sidebar-logo-mark">F<span>S</span>O</span>
           <span className="sidebar-badge">Admin</span>
+          <button
+            type="button"
+            className="mobile-menu-toggle"
+            aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            {menuOpen ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
+                <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
+                <path d="M3 6h18" /><path d="M3 12h18" /><path d="M3 18h18" />
+              </svg>
+            )}
+          </button>
         </div>
 
-        <div className="sidebar-section-label">Menú</div>
-        <nav className="sidebar-nav">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              className={`nav-item${tab === t.id ? ' active' : ''}`}
-              aria-label={t.label}
-              onClick={() => setTab(t.id)}
-            >
-              {t.icon}
-              <span className="nav-item-label">{t.label}</span>
-              <HelpIcon tip={t.tip} onDark tipRight />
-            </button>
-          ))}
-        </nav>
+        <div className="sidebar-menu">
+          <div className="sidebar-section-label">Menú</div>
+          <nav className="sidebar-nav">
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                className={`nav-item${tab === t.id ? ' active' : ''}`}
+                aria-label={t.label}
+                onClick={() => { setTab(t.id); setMenuOpen(false); }}
+              >
+                {t.icon}
+                <span className="nav-item-label">{t.label}</span>
+                <HelpIcon tip={t.tip} onDark tipRight />
+              </button>
+            ))}
+          </nav>
 
-        <div className="sidebar-footer">
-          <a href="/" target="_blank" className="sidebar-footer-link" aria-label="Ver Catálogo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" width={17} height={17}>
-              <path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-            </svg>
-            <span className="nav-item-label">Ver Catálogo</span>
-            <HelpIcon tip="Abre en una pestaña nueva el catálogo tal como lo ve el cliente, para revisar cómo quedó." onDark tipRight />
-          </a>
-          <button className="sidebar-footer-link" aria-label="Descargar PDF" onClick={() => generatePdf(catalog)}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" width={17} height={17}>
-              <path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" />
-            </svg>
-            <span className="nav-item-label">Descargar PDF</span>
-            <HelpIcon tip="Genera un PDF del catálogo completo, listo para imprimir o enviar por WhatsApp/email." onDark tipRight />
-          </button>
-          <button className="sidebar-footer-link" aria-label="Cerrar sesión" onClick={() => logout()}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" width={17} height={17}>
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="M16 17l5-5-5-5" /><path d="M21 12H9" />
-            </svg>
-            <span className="nav-item-label">Cerrar sesión</span>
-          </button>
+          <div className="sidebar-footer">
+            <a href="/" target="_blank" className="sidebar-footer-link" aria-label="Ver Catálogo" onClick={() => setMenuOpen(false)}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" width={17} height={17}>
+                <path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              </svg>
+              <span className="nav-item-label">Ver Catálogo</span>
+              <HelpIcon tip="Abre en una pestaña nueva el catálogo tal como lo ve el cliente, para revisar cómo quedó." onDark tipRight />
+            </a>
+            <button className="sidebar-footer-link" aria-label="Descargar PDF" onClick={() => { generatePdf(catalog); setMenuOpen(false); }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" width={17} height={17}>
+                <path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" />
+              </svg>
+              <span className="nav-item-label">Descargar PDF</span>
+              <HelpIcon tip="Genera un PDF del catálogo completo, listo para imprimir o enviar por WhatsApp/email." onDark tipRight />
+            </button>
+            <button className="sidebar-footer-link" aria-label="Cerrar sesión" onClick={() => { setMenuOpen(false); logout(); }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" width={17} height={17}>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="M16 17l5-5-5-5" /><path d="M21 12H9" />
+              </svg>
+              <span className="nav-item-label">Cerrar sesión</span>
+            </button>
+          </div>
         </div>
       </aside>
 
