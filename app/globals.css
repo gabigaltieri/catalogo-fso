@@ -450,7 +450,7 @@ footer {
 }
 .ft-logo span { color: var(--red); }
 footer p { font-size: 12px; line-height: 1.7; }
-.ft-nav { display: flex; justify-content: center; gap: 28px; margin: 16px 0 20px; }
+.ft-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 28px; margin: 16px 0 20px; }
 .ft-nav a {
     color: #444;
     text-decoration: none;
@@ -517,6 +517,8 @@ footer small { font-size: 11px; color: #2e2e2e; }
     .section-banner { padding: 22px 20px; }
     .sb-text h2 { font-size: 32px; }
     .sb-icon { display: none; }
+    footer { padding: 32px 20px; }
+    .ft-nav { gap: 8px 18px; }
     .prod-table { table-layout: fixed; }
     .prod-table th:first-child, .prod-table td:first-child { width: 54px; }
     .prod-table th:nth-child(2), .prod-table td:nth-child(2) { width: 24%; }
