@@ -9,6 +9,11 @@ const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '549XXXXXXXXX
 const WHATSAPP_MSG = encodeURIComponent('Hola, quiero consultar el catálogo FSO');
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MSG}`;
 
+function subcatWhatsAppUrl(label: string) {
+  const msg = encodeURIComponent(`Hola, quiero consultar sobre ${label}`);
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+}
+
 function bannerClass(color: Category['color']) {
   return color === 'dark' ? 'dark' : color === 'darkred' ? 'darkred' : '';
 }
@@ -65,7 +70,6 @@ export default async function CatalogPage() {
                 <div className="hcc-icon">{c.icon || '📁'}</div>
                 <div className="hcc-text">
                   <div className="hcc-name">{c.name}</div>
-                  <div className="hcc-desc">{c.subcategories.map((sc) => sc.name).join(', ')}</div>
                 </div>
                 <div className="hcc-arrow">→</div>
               </a>
@@ -150,6 +154,13 @@ export default async function CatalogPage() {
                         ))}
                       </tbody>
                     </table>
+
+                    <div className="subcat-wa-wrap">
+                      <a href={subcatWhatsAppUrl(subcatLabel(sc))} className="wa-btn subcat-wa-btn" target="_blank">
+                        <WhatsAppIcon size={13} />
+                        Consultar {subcatLabel(sc)} por WhatsApp
+                      </a>
+                    </div>
                   </div>
                 ))}
               </div>

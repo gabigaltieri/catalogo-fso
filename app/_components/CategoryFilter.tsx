@@ -17,22 +17,37 @@ export default function CategoryFilter({ groupId, items }: { groupId: string; it
     });
   }
 
+  function toggleExpanded(e: React.MouseEvent<HTMLButtonElement>) {
+    const row = e.currentTarget.parentElement?.querySelector('.filter-chip-row');
+    const collapsed = row?.classList.toggle('collapsed');
+    e.currentTarget.textContent = collapsed === false ? 'Ver menos ▲' : 'Ver más ▾';
+  }
+
+  const collapsible = items.length > 6;
+
   return (
     <div className="filter-bar" data-filter-group={groupId}>
-      <button type="button" className="filter-chip active" data-subcat="all" onClick={() => apply(null)}>
-        Todos
-      </button>
-      {items.map((it) => (
-        <button
-          key={it.id}
-          type="button"
-          className="filter-chip"
-          data-subcat={it.id}
-          onClick={() => apply(it.id)}
-        >
-          {it.label}
+      <div className={`filter-chip-row${collapsible ? ' collapsed' : ''}`}>
+        <button type="button" className="filter-chip active" data-subcat="all" onClick={() => apply(null)}>
+          Todos
         </button>
-      ))}
+        {items.map((it) => (
+          <button
+            key={it.id}
+            type="button"
+            className="filter-chip"
+            data-subcat={it.id}
+            onClick={() => apply(it.id)}
+          >
+            {it.label}
+          </button>
+        ))}
+      </div>
+      {collapsible && (
+        <button type="button" className="filter-toggle" onClick={toggleExpanded}>
+          Ver más ▾
+        </button>
+      )}
     </div>
   );
 }
