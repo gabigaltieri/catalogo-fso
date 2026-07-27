@@ -60,6 +60,7 @@ export type Database = {
           name: string;
           pres: string;
           description: string;
+          image_url: string | null;
           sort_order: number;
           created_at: string;
         };
@@ -70,6 +71,7 @@ export type Database = {
           name: string;
           pres?: string;
           description?: string;
+          image_url?: string | null;
           sort_order?: number;
           created_at?: string;
         };

@@ -152,3 +152,36 @@ export async function removeSubcategoryImage(subcategoryId: string) {
   if (error) throw new Error(error.message);
   refresh();
 }
+
+export async function createProductImageUploadUrl(productId: string, ext: string) {
+  const cleanExt = ext.toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+  const path = `${productId}/${Date.now()}.${cleanExt}`;
+
+  const supabase = createServiceClient();
+  const { data, error } = await supabase.storage.from('product-images').createSignedUploadUrl(path);
+  if (error) throw new Error(error.message);
+
+  return { path, token: data.token };
+}
+
+export async function finalizeProductImage(productId: string, path: string) {
+  const supabase = createServiceClient();
+  const { data: pub } = supabase.storage.from('product-images').getPublicUrl(path);
+
+  const { error } = await supabase
+    .from('products')
+    .update({ image_url: pub.publicUrl })
+    .eq('id', productId);
+  if (error) throw new Error(error.message);
+  refresh();
+}
+
+export async function removeProductImage(productId: string) {
+  const supabase = createServiceClient();
+  const { error } = await supabase
+    .from('products')
+    .update({ image_url: null })
+    .eq('id', productId);
+  if (error) throw new Error(error.message);
+  refresh();
+}

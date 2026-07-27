@@ -1,8 +1,9 @@
 import Image from 'next/image';
-import { getCatalog, type Category } from '@/lib/queries';
+import { getCatalog, flattenProducts, type Category } from '@/lib/queries';
 import NavScrollSync from '@/app/_components/NavScrollSync';
 import CategoryFilter from '@/app/_components/CategoryFilter';
 import BackToTop from '@/app/_components/BackToTop';
+import SearchBox from '@/app/_components/SearchBox';
 
 export const revalidate = 30;
 
@@ -38,6 +39,7 @@ export default async function CatalogPage() {
   const categoriesWithProducts = categories.filter((c) =>
     c.subcategories.some((sc) => sc.products.length > 0)
   );
+  const searchProducts = flattenProducts(categoriesWithProducts);
 
   return (
     <>
@@ -50,18 +52,27 @@ export default async function CatalogPage() {
               <small>Limpieza que brilla en cada rincón</small>
             </div>
           </a>
-          <nav className="site-nav">
-            {categoriesWithProducts.map((c) => (
-              <a key={c.id} href={`#sec-cat-${c.id}`}>{c.name}</a>
-            ))}
-          </nav>
+          <SearchBox products={searchProducts} />
+          <div className="nav-menu">
+            <button type="button" className="nav-menu-trigger">
+              Producto
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <nav className="nav-menu-dropdown site-nav">
+              {categoriesWithProducts.map((c) => (
+                <a key={c.id} href={`#sec-cat-${c.id}`}>{c.name}</a>
+              ))}
+            </nav>
+          </div>
         </div>
       </header>
 
       <section className="hero">
         <div className="hero-inner">
           <div className="hero-left">
-            <div className="hero-eyebrow">Catálogo 2025</div>
+            <div className="hero-eyebrow">Catálogo 2026</div>
             <h1 className="hero-headline">FSO<br /><em>Productos</em><br />de Limpieza</h1>
             <p className="hero-sub">Distribución mayorista de productos de limpieza, higiene institucional y descartables.</p>
           </div>
@@ -138,6 +149,7 @@ export default async function CatalogPage() {
                     <table className={`prod-table ${tableClass(cat.color)}`}>
                       <thead>
                         <tr>
+                          <th className="prod-photo-col">Foto</th>
                           <th>Código</th>
                           <th>Producto</th>
                           <th>Presentación</th>
@@ -146,7 +158,14 @@ export default async function CatalogPage() {
                       </thead>
                       <tbody>
                         {sc.products.map((p) => (
-                          <tr key={p.id}>
+                          <tr key={p.id} id={`prod-${p.id}`}>
+                            <td className="prod-photo-col">
+                              {p.imageUrl ? (
+                                <Image src={p.imageUrl} alt={p.name} width={44} height={44} className="prod-photo" />
+                              ) : (
+                                <span className="prod-photo prod-photo-empty">{sc.icon || '📦'}</span>
+                              )}
+                            </td>
                             <td><span className="cod">{p.cod}</span></td>
                             <td className="prod-name">{p.name}</td>
                             <td className="prod-pres">{p.pres}</td>
@@ -194,7 +213,7 @@ export default async function CatalogPage() {
             <a key={c.id} href={`#sec-cat-${c.id}`}>{c.name}</a>
           ))}
         </nav>
-        <small>© 2025 FSO Productos de Limpieza &nbsp;·&nbsp; Todos los derechos reservados</small>
+        <small>© 2026 FSO Productos de Limpieza &nbsp;·&nbsp; Todos los derechos reservados</small>
       </footer>
 
       <a href={WHATSAPP_URL} className="wa-fab" target="_blank" title="Consultar por WhatsApp">

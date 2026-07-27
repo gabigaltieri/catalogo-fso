@@ -5,6 +5,7 @@ import { flattenProducts, type Category, type FlatProduct } from '@/lib/queries'
 import { deleteProduct } from '../actions';
 import HelpIcon from './HelpIcon';
 import EditProductModal from './EditProductModal';
+import ProductImage from './ProductImage';
 import BackToTop from '@/app/_components/BackToTop';
 
 export default function ProductsTable({
@@ -73,6 +74,7 @@ export default function ProductsTable({
         <table className="admin-prod-table">
           <thead>
             <tr>
+              <th>Foto</th>
               <th>Código</th>
               <th>Producto · Presentación</th>
               <th>Descripción</th>
@@ -83,6 +85,9 @@ export default function ProductsTable({
           <tbody>
             {filtered.map((p) => (
               <tr key={p.id}>
+                <td>
+                  <ProductImage productId={p.id} imageUrl={p.imageUrl} showToast={showToast} refresh={refresh} />
+                </td>
                 <td><span className="cod-badge">{p.cod}</span></td>
                 <td>
                   <strong>{p.name}</strong>

@@ -7,6 +7,7 @@ export type Product = {
   name: string;
   pres: string;
   description: string;
+  imageUrl: string | null;
 };
 
 export type Subcategory = {
@@ -101,6 +102,7 @@ export async function getCatalog(): Promise<Category[]> {
             name: p.name,
             pres: p.pres,
             description: p.description,
+            imageUrl: p.image_url,
           })),
       })),
   }));
