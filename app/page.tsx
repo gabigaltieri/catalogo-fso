@@ -46,7 +46,7 @@ export default async function CatalogPage() {
       <header className="site-header">
         <div className="header-inner">
           <a href="#" className="logo-wrap">
-            <div className="logo-fso">F<span>S</span>O</div>
+            <Image src="/logo-fso.jpg" alt="FSO Productos de Limpieza" width={48} height={48} className="logo-img" />
             <div className="logo-info">
               <b>Productos de Limpieza</b>
               <small>Limpieza que brilla en cada rincón</small>
@@ -161,7 +161,7 @@ export default async function CatalogPage() {
                           <tr key={p.id} id={`prod-${p.id}`}>
                             <td className="prod-photo-col">
                               {p.imageUrl ? (
-                                <Image src={p.imageUrl} alt={p.name} width={44} height={44} className="prod-photo" />
+                                <Image src={p.imageUrl} alt={p.name} width={88} height={88} className="prod-photo" />
                               ) : (
                                 <span className="prod-photo prod-photo-empty">{sc.icon || '📦'}</span>
                               )}
@@ -203,7 +203,7 @@ export default async function CatalogPage() {
       </div>
 
       <footer>
-        <div className="ft-logo">F<span>S</span>O</div>
+        <Image src="/logo-fso.jpg" alt="FSO Productos de Limpieza" width={64} height={64} className="ft-logo-img" />
         <p>Productos de Limpieza &nbsp;·&nbsp; Higiene Institucional &nbsp;·&nbsp; Descartables</p>
         <p style={{ fontStyle: 'italic', fontSize: 11, marginTop: 4, color: '#333' }}>
           &quot;Limpieza que brilla en cada rincón&quot;
