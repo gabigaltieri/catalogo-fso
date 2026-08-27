@@ -649,10 +649,12 @@ footer small { font-size: 11px; color: #2e2e2e; }
     .hero-headline { font-size: 52px; }
     .subcat-header { flex-direction: column-reverse; }
     .cat-photo { width: 100%; min-height: 130px; }
-    .header-inner { padding: 0 20px; grid-template-columns: auto 1fr; column-gap: 12px; }
-    .search-nav { justify-self: stretch; }
-    .search-pill { width: auto; }
-    .search-pill:focus-within { width: auto; }
+    .header-inner { padding: 0 16px; grid-template-columns: auto 1fr; column-gap: 10px; }
+    .logo-info small { display: none; }
+    .logo-info b { font-size: 10px; white-space: nowrap; }
+    .search-nav { justify-self: stretch; min-width: 0; }
+    .search-pill { width: 100%; }
+    .search-pill:focus-within { width: 100%; }
     .nav-menu { display: none; }
     .catalog-wrap { padding: 0 20px; }
     .filter-bar { padding: 14px 20px 0; }
