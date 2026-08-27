@@ -14,9 +14,35 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
+const title = "FSO — Catálogo de Productos";
+const description = "Catálogo digital de FSO Productos de Limpieza. Limpieza que brilla en cada rincón.";
+
 export const metadata: Metadata = {
-  title: "FSO — Catálogo de Productos",
-  description: "Catálogo digital de FSO Productos de Limpieza. Limpieza que brilla en cada rincón.",
+  metadataBase: new URL("https://fso-catalogo.vercel.app"),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: "/",
+    siteName: "FSO Productos de Limpieza",
+    locale: "es_AR",
+    type: "website",
+    images: [
+      {
+        url: "/logo-fso.jpg",
+        width: 1254,
+        height: 1254,
+        alt: "FSO Productos de Limpieza",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title,
+    description,
+    images: ["/logo-fso.jpg"],
+  },
 };
 
 export default function RootLayout({
