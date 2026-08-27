@@ -59,13 +59,6 @@ body {
     text-decoration: none;
     justify-self: start;
 }
-.logo-img {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-}
 .logo-info { display: flex; flex-direction: column; }
 .logo-info b {
     font-size: 11px;
@@ -80,6 +73,22 @@ body {
     letter-spacing: .8px;
     text-transform: uppercase;
 }
+/* ═══════════ MENÚ HAMBURGUESA (navbar mobile) ═══════════ */
+.hamburger-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    color: var(--black);
+    cursor: pointer;
+    padding: 0;
+    justify-self: start;
+}
+.mobile-menu-panel { display: none; }
+
 /* ═══════════ MENÚ "PRODUCTO" (navbar) ═══════════ */
 .nav-menu { position: relative; justify-self: end; }
 .nav-menu-trigger {
@@ -227,18 +236,11 @@ body {
 
 /* ═══════════ HERO ═══════════ */
 .hero {
-    background: linear-gradient(160deg, #0d0d0d 0%, #1c0000 65%, #280000 100%);
-    color: var(--white);
+    background: var(--white);
+    color: var(--black);
     padding: 64px 60px 68px;
     position: relative;
     overflow: hidden;
-}
-.hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(ellipse 55% 80% at 72% 50%, rgba(204,0,0,.14) 0%, transparent 70%);
-    pointer-events: none;
 }
 .hero-inner {
     position: relative;
@@ -268,22 +270,16 @@ body {
     height: 2px;
     background: var(--red);
 }
-.hero-headline {
-    font-family: var(--font-display);
-    font-size: 80px;
-    font-weight: 900;
-    line-height: .92;
-    letter-spacing: -1.5px;
-    text-transform: uppercase;
-    margin-bottom: 24px;
+.hero-logo {
+    width: 260px;
+    height: 260px;
+    object-fit: contain;
 }
-.hero-headline em { font-style: normal; color: var(--red); }
-.hero-sub { font-size: 14px; color: #888; line-height: 1.8; max-width: 360px; }
 
 .hero-right { display: flex; flex-direction: column; gap: 10px; }
 .hero-cat-card {
-    background: rgba(255,255,255,.04);
-    border: 1px solid rgba(255,255,255,.07);
+    background: rgba(0,0,0,.03);
+    border: 1px solid rgba(0,0,0,.08);
     border-left: 3px solid var(--red);
     border-radius: 6px;
     padding: 16px 20px;
@@ -294,7 +290,7 @@ body {
     gap: 16px;
     transition: background .15s, border-left-color .15s;
 }
-.hero-cat-card:hover { background: rgba(204,0,0,.1); border-left-color: #ff3333; }
+.hero-cat-card:hover { background: rgba(204,0,0,.08); border-left-color: #ff3333; }
 .hcc-icon { font-size: 26px; flex-shrink: 0; }
 .hcc-text { flex: 1; }
 .hcc-name {
@@ -303,12 +299,12 @@ body {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: .3px;
-    color: var(--white);
+    color: var(--black);
     line-height: 1;
     margin-bottom: 3px;
 }
 .hcc-desc { font-size: 12px; color: #666; }
-.hcc-arrow { font-size: 16px; color: #444; flex-shrink: 0; transition: color .15s, transform .15s; }
+.hcc-arrow { font-size: 16px; color: #ccc; flex-shrink: 0; transition: color .15s, transform .15s; }
 .hero-cat-card:hover .hcc-arrow { color: var(--red); transform: translateX(3px); }
 
 /* ═══════════ SECTION BANNER ═══════════ */
@@ -639,19 +635,52 @@ footer small { font-size: 11px; color: #2e2e2e; }
     .filter-bar { padding: 18px 32px 0; }
     .cat-photo { width: 220px; min-height: 140px; }
     .hero { padding: 48px 32px; }
-    .hero-headline { font-size: 60px; }
+    .hero-logo { width: 190px; height: 190px; }
     .section-banner { padding: 28px 32px; }
     .sb-text h2 { font-size: 40px; }
 }
 @media (max-width: 768px) {
     .hero-inner { grid-template-columns: 1fr; gap: 32px; }
+    .hero-left { display: flex; flex-direction: column; align-items: center; text-align: center; }
     .hero { padding: 40px 20px; }
-    .hero-headline { font-size: 52px; }
+    .hero-logo { width: 160px; height: 160px; }
     .subcat-header { flex-direction: column-reverse; }
     .cat-photo { width: 100%; min-height: 130px; }
     .header-inner { padding: 0 16px; grid-template-columns: auto 1fr; column-gap: 10px; }
-    .logo-info small { display: none; }
-    .logo-info b { font-size: 10px; white-space: nowrap; }
+    .logo-wrap { display: none; }
+    .hamburger-btn { display: flex; }
+    .mobile-menu-panel.site-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+        background: var(--white);
+        border-bottom: 2px solid var(--red);
+        box-shadow: 0 12px 24px rgba(0,0,0,.15);
+        padding: 8px;
+        z-index: 250;
+    }
+    .mobile-menu-panel.site-nav a {
+        color: var(--black);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: .3px;
+        text-transform: uppercase;
+        padding: 12px 14px;
+        border-radius: 6px;
+        transition: background .15s, color .15s;
+    }
+    .mobile-menu-panel.site-nav a:hover,
+    .mobile-menu-panel.site-nav a.active {
+        background: var(--red-faint);
+        color: var(--red);
+    }
     .search-nav { justify-self: stretch; min-width: 0; }
     .search-pill { width: 100%; }
     .search-pill:focus-within { width: 100%; }

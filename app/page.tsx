@@ -4,6 +4,7 @@ import NavScrollSync from '@/app/_components/NavScrollSync';
 import CategoryFilter from '@/app/_components/CategoryFilter';
 import BackToTop from '@/app/_components/BackToTop';
 import SearchBox from '@/app/_components/SearchBox';
+import MobileMenu from '@/app/_components/MobileMenu';
 
 export const revalidate = 30;
 
@@ -45,8 +46,8 @@ export default async function CatalogPage() {
     <>
       <header className="site-header">
         <div className="header-inner">
+          <MobileMenu items={categoriesWithProducts.map((c) => ({ id: c.id, name: c.name }))} />
           <a href="#" className="logo-wrap">
-            <Image src="/logo-fso.jpg" alt="FSO Productos de Limpieza" width={48} height={48} className="logo-img" />
             <div className="logo-info">
               <b>Productos de Limpieza</b>
               <small>Limpieza que brilla en cada rincón</small>
@@ -73,8 +74,7 @@ export default async function CatalogPage() {
         <div className="hero-inner">
           <div className="hero-left">
             <div className="hero-eyebrow">Catálogo 2026</div>
-            <h1 className="hero-headline">FSO<br /><em>Productos</em><br />de Limpieza</h1>
-            <p className="hero-sub">Distribución mayorista de productos de limpieza, higiene institucional y descartables.</p>
+            <Image src="/logo-fso.jpg" alt="FSO Productos de Limpieza" width={260} height={260} className="hero-logo" priority />
           </div>
           <div className="hero-right">
             {categoriesWithProducts.map((c) => (
